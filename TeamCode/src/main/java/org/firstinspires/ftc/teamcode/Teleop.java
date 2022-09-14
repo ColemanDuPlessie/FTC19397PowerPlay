@@ -37,14 +37,11 @@ import org.firstinspires.ftc.teamcode.backend.commandbased.SubsystemInUseExcepti
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.DriveFromGamepad;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.DumpArm;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.HoldSubsystemPosition;
-import org.firstinspires.ftc.teamcode.backend.commandbased.commands.HoldSubsystemSpeed;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.MakeIntakeVertical;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.RunRunnable;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.SetSubsystemSpeed;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.SpinDuck;
-import org.firstinspires.ftc.teamcode.backend.utilities.PressableButton;
 import org.firstinspires.ftc.teamcode.backend.utilities.RadioButtons;
-import org.firstinspires.ftc.teamcode.backend.utilities.ToggleButton;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -55,7 +52,7 @@ import java.util.function.Supplier;
  */
 
 @TeleOp(name="Teleop (THIS ONE)")
-public class TeleopWithSlides extends CommandbasedOpmode {
+public class Teleop extends CommandbasedOpmode {
 
     @Override
     public void init() {
