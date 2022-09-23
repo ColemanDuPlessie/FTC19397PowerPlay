@@ -39,7 +39,8 @@ import org.firstinspires.ftc.teamcode.backend.commandbased.commands.DumpArm;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.HoldSubsystemPosition;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.MakeIntakeVertical;
 import org.firstinspires.ftc.teamcode.backend.commandbased.commands.RunRunnable;
-import org.firstinspires.ftc.teamcode.backend.utilities.OverrideGamepadWrapper;
+import org.firstinspires.ftc.teamcode.backend.commandbased.commands.SetSubsystemSpeed;
+import org.firstinspires.ftc.teamcode.backend.commandbased.commands.SpinDuck;
 import org.firstinspires.ftc.teamcode.backend.utilities.RadioButtons;
 
 import java.util.HashMap;
@@ -50,14 +51,15 @@ import java.util.function.Supplier;
  * I should probably document this...
  */
 
-@TeleOp(name="Outreach Demo")
-public class DemoTeleop extends CommandbasedOpmode {
+@TeleOp(name="Slides Logger")
+public class SlidesLoggerTest extends CommandbasedOpmode {
+
+    private double slidesTarget = 0.0;
 
     @Override
     public void init() {
 
         robot.init(hardwareMap, true);
-        pad1 = new OverrideGamepadWrapper(pad1, pad2, 0.35);
 
     }
 
@@ -74,22 +76,6 @@ public class DemoTeleop extends CommandbasedOpmode {
     @Override
     public void start() {
 
-        try {
-            scheduler.scheduleCommand(new DriveFromGamepad(robot, pad1, SetDrivingStyle.isFieldCentric));
-
-        } catch (SubsystemInUseException e) {} // This catch block will never occur
-
-
-        scheduler.setDefaultCommand(new HoldSubsystemPosition(robot.slides,
-                new RadioButtons(new HashMap<Supplier<Boolean>, Object>() {{
-                    put(pad1::getRightBumper, 0.1); // The slides must be down if we're running the intake
-                }}, false), Subsystem.SLIDES, 0.1, () -> pad1.getX() ? 0.1 : null));
-
-        scheduler.setDefaultCommand(new HoldSubsystemPosition(robot.arm,
-                new RadioButtons(new HashMap<Supplier<Boolean>, Object>() {{
-                    put(pad1::getX, 0.1);
-                }}, false), Subsystem.ARM, 0.1));
-
     }
 
     /*
@@ -97,6 +83,12 @@ public class DemoTeleop extends CommandbasedOpmode {
      */
     @Override
     public void loop() {
+        if (pad1.getDpadUp()) {slidesTarget = Math.min(slidesTarget+0.0025, 1.0);}
+        if (pad1.getDpadDown()) {slidesTarget = Math.max(slidesTarget-0.0025, 0.0);}
+        robot.slides.setTargetPosition(slidesTarget);
+        telemetry.addData("Slides Position", robot.slides.motor.getCurrentPosition());
+        telemetry.addData("Slides Target", slidesTarget);
+
     }
 
     /*

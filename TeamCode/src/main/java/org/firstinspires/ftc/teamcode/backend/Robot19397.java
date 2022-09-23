@@ -59,9 +59,7 @@ public class Robot19397
     protected double startHeading;
 
     public ArmSubsystem arm;
-    public IntakeSubsystem intake;
     public SlidesSubsystem slides;
-    public CarouselSubsystem carousel;
 
     private double leftFrontSpeed;
     private double rightFrontSpeed;
@@ -84,9 +82,7 @@ public class Robot19397
         hwMap = ahwMap;
 
         arm = new ArmSubsystem(timer, hwMap);
-        intake = new IntakeSubsystem(timer, hwMap);
         slides = new SlidesSubsystem(timer, hwMap);
-        carousel = new CarouselSubsystem(timer, hwMap);
 
         // Define and Initialize Motors
         imu = hwMap.get(BNO055IMU.class, "chubimu");
@@ -122,9 +118,7 @@ public class Robot19397
         hwMap = ahwMap;
 
         arm = new ArmSubsystem(timer, hwMap);
-        intake = new IntakeSubsystem(timer, hwMap);
         slides = new SlidesSubsystem(timer, hwMap, isTeleop);
-        carousel = new CarouselSubsystem(timer, hwMap);
 
         // Define and Initialize Motors
         imu = hwMap.get(BNO055IMU.class, "chubimu");
@@ -236,8 +230,6 @@ public class Robot19397
     }
 
     public void update() {
-        intake.update();
-        carousel.update();
         arm.update();
         slides.update();
     }

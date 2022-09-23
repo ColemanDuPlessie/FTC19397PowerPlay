@@ -2,33 +2,73 @@ package org.firstinspires.ftc.teamcode.backend.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.AutoToTeleopContainer;
 import org.firstinspires.ftc.teamcode.backend.utilities.DoubledServo;
+import org.firstinspires.ftc.teamcode.backend.utilities.controllers.GravityPIDFController;
+import org.firstinspires.ftc.teamcode.backend.utilities.controllers.PIDController;
 
 @Config
 public class ArmSubsystem extends Subsystem implements PositionControlled {
 
-    protected DcMotor motor;
+    public DcMotor motor; // TODO
 
-    protected double targetPosition = 1.0;
-    private final int TOTALTICKS = 269;
+    private final PIDController PIDF;
 
-    public ArmSubsystem (ElapsedTime aTimer, HardwareMap ahwMap) {
+    public static int minPosition = 0; // For a little extra retraction at the very bottom
+    public static int maxPosition = -230;
+
+    public static double kP = 0.015;
+    public static double kI = 0.0001;
+    public static double kD = 0.0002;
+    public static double kG = 0.1;
+    public static double powerMultThrottle = 0.2;
+
+    private int targetPosition;
+
+    private final int startPosition;
+
+    public ArmSubsystem(ElapsedTime aTimer, HardwareMap ahwMap) {
         super(aTimer, ahwMap);
-        motor = ahwMap.get(DcMotor.class, "ArmMotor" );
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setTargetPosition(0.0);
+        motor = ahwMap.get(DcMotor.class, "ArmMotor");
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        startPosition = motor.getCurrentPosition();
+        targetPosition = 0;
+        PIDF = new GravityPIDFController(kP, kI, kD, aTimer, kG);
     }
+
+    public ArmSubsystem(ElapsedTime aTimer, HardwareMap ahwMap, boolean isTeleop) {
+        super(aTimer, ahwMap);
+        motor = ahwMap.get(DcMotor.class, "ArmMotor");
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (isTeleop) {
+            Integer position = AutoToTeleopContainer.getInstance().getSlidesPosition();
+            if (position == null) {
+                startPosition = motor.getCurrentPosition();
+            } else { startPosition = position;}
+        } else {
+            startPosition = motor.getCurrentPosition();
+            AutoToTeleopContainer.getInstance().setSlidesPosition(startPosition);
+        }
+        targetPosition = 0;
+        PIDF = new GravityPIDFController(kP, kI, kD, aTimer, kG);
+    }
+
+    public double getPosition() {return ((double)(motor.getCurrentPosition()-startPosition)-minPosition)/(double)(maxPosition-minPosition);}
 
     public void setTargetPosition(double target) {
-        if (targetPosition == target) {return;}
-        targetPosition = target;
-        motor.setTargetPosition((int)(targetPosition*this.TOTALTICKS));
+        targetPosition = (int)(target * (maxPosition-minPosition) + minPosition);
     }
 
-    public double getPosition() {return targetPosition;}
+    @Override
+    public void update() {
+        motor.setPower(Math.min(powerMultThrottle, Math.max(PIDF.update(motor.getCurrentPosition()-startPosition, targetPosition) * powerMultThrottle, -powerMultThrottle)));
+    }
 
 }

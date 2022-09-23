@@ -13,18 +13,18 @@ import org.firstinspires.ftc.teamcode.backend.utilities.controllers.PIDControlle
 @Config
 public class SlidesSubsystem extends Subsystem implements PositionControlled {
 
-    protected DcMotor motor;
+    public DcMotor motor; // TODO
 
     private final PIDController PIDF;
 
-    public static int minPosition = -20; // For a little extra retraction at the very bottom
-    public static int maxPosition = 1620;
+    public static int minPosition = -60; // We don't actually want to go all the way down.
+    public static int maxPosition = -3700;
 
     public static double kP = 0.005;
     public static double kI = 0.0000;
     public static double kD = 0.0001;
     public static double kG = 0.1;
-    public static double powerMultThrottle = 1.0;
+    public static double powerMultThrottle = 0.75;
 
     private int targetPosition;
 

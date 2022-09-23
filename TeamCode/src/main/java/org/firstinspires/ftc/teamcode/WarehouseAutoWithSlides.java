@@ -163,9 +163,6 @@ public class WarehouseAutoWithSlides extends CommandbasedOpmode {
                     scheduler.scheduleCommand(new HoldSubsystemPosition(robot.arm, () -> 0.0, Subsystem.ARM, 0.0));
                 })
                 .splineToLinearHeading(new Pose2d(PREBARRIERX, PREBARRIERY, Math.toRadians(PREBARRIERTHETA)), Math.toRadians(PREBARRIERTHETA))
-                .addTemporalMarker(() -> {
-                    scheduler.scheduleCommand(new HoldSubsystemSpeed(robot.intake, () -> 1.0, Subsystem.INTAKE));
-                })
                 .splineToConstantHeading(new Vector2d(PREBARRIERX+BARRIERTRAVELDISTANCE, PREBARRIERY), Math.toRadians(PREBARRIERTHETA))
                 .build();
 
@@ -180,7 +177,6 @@ public class WarehouseAutoWithSlides extends CommandbasedOpmode {
                 .setVelConstraint(maxVelo)
                 .setReversed(true)
                 .UNSTABLE_addTemporalMarkerOffset(1, () -> {
-                    scheduler.scheduleCommand(new HoldSubsystemSpeed(robot.intake, () -> -1.0, Subsystem.INTAKE));
                 })
                 .UNSTABLE_addTemporalMarkerOffset(1.6, () -> {
                     scheduler.clearSubsystem(Subsystem.INTAKE);
@@ -245,7 +241,6 @@ public class WarehouseAutoWithSlides extends CommandbasedOpmode {
         } catch (OpenCvCameraException e) {
             telemetry.addLine("Camera was not initialized. CV pipeline replaced by default behavior.");
         }
-        scheduler.setDefaultCommand(new MakeIntakeVertical(robot.intake, timer));
         Command relocalize = new RunRunnableOnce(() -> drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(RELOCALIZATIONERRORX, RELOCALIZATIONERRORY, 0))));
         scheduler.scheduleCommand(new SequentialCommandGroup(
                 new FollowRRTraj(drive, deliverPreload),

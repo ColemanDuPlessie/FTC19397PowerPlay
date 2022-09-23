@@ -184,11 +184,9 @@ public class CarouselAutoWithSlides extends CommandbasedOpmode {
 
         carousel = drive.trajectorySequenceBuilder(new Pose2d(-66.0+WALLBUMPENDDIST, WALLBUMPY, Math.toRadians(WALLBUMPTHETA)))
                 .splineToLinearHeading(new Pose2d(DUCKX, DUCKY, Math.toRadians(DUCKTHETA)), Math.toRadians(DUCKTHETA))
-                .addTemporalMarker(() -> {scheduler.scheduleCommand(new SpinDuck(robot.carousel, SetDrivingStyle.isBlue, timer, true));})
                 .waitSeconds(3.2)
                 .setVelConstraint((a, b, c, d) -> CONSUMEDUCKSPEED)
                 .UNSTABLE_addTemporalMarkerOffset(-1.5, () -> {
-                    scheduler.scheduleCommand(new HoldSubsystemSpeed(robot.intake, () -> 0.5, Subsystem.INTAKE));
                     scheduler.scheduleCommand(new HoldSubsystemPosition(robot.arm, () -> 0.0, Subsystem.ARM, 0.0));
 
                 })
@@ -255,7 +253,6 @@ public class CarouselAutoWithSlides extends CommandbasedOpmode {
         } catch (OpenCvCameraException e) {
             telemetry.addLine("Camera was not initialized. CV pipeline replaced by default behavior.");
         }
-        scheduler.setDefaultCommand(new MakeIntakeVertical(robot.intake, timer));
         Command relocalize = new RunRunnableOnce(() -> drive.setPoseEstimate(drive.getPoseEstimate().plus(new Pose2d(RELOCALIZATIONERRORX, RELOCALIZATIONERRORY, 0))));
         Command relocalizeIntoField = new RunRunnableOnce(() -> drive.setPoseEstimate(new Pose2d(Math.max(-66.0, drive.getPoseEstimate().getX()), drive.getPoseEstimate().getY(), drive.getPoseEstimate().getHeading())));
         scheduler.scheduleCommand(new SequentialCommandGroup(

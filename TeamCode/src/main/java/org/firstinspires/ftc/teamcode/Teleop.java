@@ -77,36 +77,20 @@ public class Teleop extends CommandbasedOpmode {
         try {
             scheduler.scheduleCommand(new DriveFromGamepad(robot, pad1, SetDrivingStyle.isFieldCentric));
 
-            scheduler.scheduleCommand(new RunRunnable(() -> { // This command will be scheduled before the the slides' position command.
-                if (pad1.getX()) {
-                    try {
-                        scheduler.scheduleCommand(new DumpArm(robot.arm, timer));
-                    } catch (SubsystemInUseException e) {}
-            }
-            }));
-
         } catch (SubsystemInUseException e) {} // This catch block will never occur
-
-        scheduler.setDefaultCommand(new MakeIntakeVertical(robot.intake, timer));
 
         scheduler.setDefaultCommand(new HoldSubsystemPosition(robot.slides,
                 new RadioButtons(new HashMap<Supplier<Boolean>, Object>() {{
-                    put(pad1::getDpadDown, 0.05); // TODO Dpad down is remapped to B. We'll see if this is an improvement.
-                    put(pad1::getRightBumper, 0.0); // The slides must be down if we're running the intake
-                    put(pad1::getDpadUp, 1.0);
-                    put(pad1::getDpadLeft, 0.5);
-                    put(pad1::getB, 0.05);
-                    put(pad1::getX, null);
+                    put(pad1::getDpadDown, 0.0); // TODO Dpad down is remapped to B. We'll see if this is an improvement.
+                    put(pad1::getDpadUp, 1.0); // The slides must be down if we're running the intake
+                    put(pad1::getDpadLeft, 0.35);
+                    put(pad1::getDpadRight, 0.7);
                 }}, false), Subsystem.SLIDES, 0.0, () -> pad1.getX() ? 0.05 : null));
 
         scheduler.setDefaultCommand(new HoldSubsystemPosition(robot.arm,
                 new RadioButtons(new HashMap<Supplier<Boolean>, Object>() {{
-                    put(pad1::getDpadDown, 0.1); // TODO Dpad down is remapped to B. We'll see if this is an improvement.
-                    put(pad1::getRightBumper, 0.0); // The arm must be down if we're running the intake
-                    put(pad1::getB, 0.1);
-                    put(pad1::getDpadLeft, 0.2);
-                    put(pad1::getDpadUp, 0.2);
-                    put(pad1::getX, 0.1);
+                    put(pad1::getA, 1.0);
+                    put(pad1::getB, 0.0);
                 }}, false), Subsystem.ARM, 0.0));
 
     }
@@ -116,22 +100,6 @@ public class Teleop extends CommandbasedOpmode {
      */
     @Override
     public void loop() {
-
-        if (pad1.getA()) {
-            try {
-                scheduler.scheduleCommand(new SpinDuck(robot.carousel, SetDrivingStyle.isBlue, timer));
-            } catch (SubsystemInUseException e) {}
-        }
-
-        if (SetDrivingStyle.buttonstyleHolds && !pad1.getRightBumper() && !pad1.getLeftBumper()) {
-            scheduler.clearSubsystem(Subsystem.INTAKE);
-        } else if (pad1.getB() || pad1.getDpadDown()) {  // TODO Dpad down is remapped to B. We'll see if this is an improvement.
-            scheduler.clearSubsystem(Subsystem.INTAKE);
-        } else if (pad1.getRightBumper()) {
-            scheduler.scheduleCommand(new SetSubsystemSpeed(robot.intake, 1.0, Subsystem.INTAKE));
-        } else if (pad1.getLeftBumper()) {
-            scheduler.scheduleCommand(new SetSubsystemSpeed(robot.intake, -1.0, Subsystem.INTAKE));
-        }
 
     }
 
