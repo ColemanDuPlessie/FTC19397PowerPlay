@@ -85,6 +85,7 @@ public class Teleop extends CommandbasedOpmode {
                     put(pad1::getDpadUp, 1.0); // The slides must be down if we're running the intake
                     put(pad1::getDpadLeft, 0.35);
                     put(pad1::getDpadRight, 0.7);
+                    put(pad1::getLeftBumper, 0.2);
                 }}, false), Subsystem.SLIDES, 0.0, () -> pad1.getX() ? 0.05 : null));
 
         scheduler.setDefaultCommand(new HoldSubsystemPosition(robot.arm,

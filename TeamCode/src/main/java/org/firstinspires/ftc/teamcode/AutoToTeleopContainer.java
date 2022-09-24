@@ -13,6 +13,7 @@ public class AutoToTeleopContainer {
 
     public Double forwardsAngleDelta;
     private Integer slidesPosition;
+    private Integer armPosition;
 
     private AutoToTeleopContainer() {
     }
@@ -32,6 +33,15 @@ public class AutoToTeleopContainer {
         if (slidesPosition == null) {return null;}
         int ans = slidesPosition;
         slidesPosition = null;
+        return ans;
+    }
+
+    public void setArmPosition(int toSet) {armPosition = toSet;}
+
+    public Integer getArmPosition() {
+        if (armPosition == null) {return null;}
+        int ans = armPosition;
+        armPosition = null;
         return ans;
     }
 

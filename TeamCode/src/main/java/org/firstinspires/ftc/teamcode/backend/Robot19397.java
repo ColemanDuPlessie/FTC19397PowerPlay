@@ -209,7 +209,7 @@ public class Robot19397
         }
         double forward = (leftFrontPower + rightFrontPower + leftRearPower + rightRearPower) / 4;
         double strafe = (leftFrontPower - rightFrontPower - leftRearPower + rightRearPower) / 4;
-        double turnAbs = Math.abs(leftFrontPower - rightFrontPower + leftRearPower * rightRearPower) / 4;
+        double turnAbs = Math.abs(leftFrontPower - rightFrontPower + leftRearPower - rightRearPower) / 4;
         double polar = Math.sqrt(forward * forward + strafe * strafe);
         if (polar > maxPower) {
             leftFrontPower /= polar / maxPower;

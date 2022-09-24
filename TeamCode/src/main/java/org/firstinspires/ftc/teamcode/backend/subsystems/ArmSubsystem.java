@@ -48,13 +48,13 @@ public class ArmSubsystem extends Subsystem implements PositionControlled {
         motor.setDirection(DcMotorSimple.Direction.FORWARD);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (isTeleop) {
-            Integer position = AutoToTeleopContainer.getInstance().getSlidesPosition();
+            Integer position = AutoToTeleopContainer.getInstance().getArmPosition();
             if (position == null) {
                 startPosition = motor.getCurrentPosition();
             } else { startPosition = position;}
         } else {
             startPosition = motor.getCurrentPosition();
-            AutoToTeleopContainer.getInstance().setSlidesPosition(startPosition);
+            AutoToTeleopContainer.getInstance().setArmPosition(startPosition);
         }
         targetPosition = 0;
         PIDF = new GravityPIDFController(kP, kI, kD, aTimer, kG);

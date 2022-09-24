@@ -15,7 +15,7 @@ public class DriveFromGamepad implements Command {
 
     private final double topSpeed = 1.0;
     private final double defaultSpeed = 0.8;
-    private final double minSpeed = 0.175;
+    private final double minSpeed = 0.25;
 
     public DriveFromGamepad(Robot19397 robot, GamepadWrapper gamepad, boolean fieldCentric) {
         this.gamepad = gamepad;
